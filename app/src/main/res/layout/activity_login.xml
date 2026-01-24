@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/img_20251024_231631"
+    android:padding="20dp"
+    android:id="@+id/main">
+
+    <TextView
+        android:id="@+id/tv_login_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_title"
+        android:textColor="#6698A0"
+        android:textSize="38sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_account_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hint_account_label"
+        android:textColor="#6698A0"
+        android:textSize="38sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/tv_login_title"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="15dp" />
+
+    <EditText
+        android:id="@+id/et_account"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:autofillHints="username"
+        android:background="@drawable/edittext_bg"
+        android:hint="@string/account_hint"
+        android:inputType="text"
+        android:padding="12dp"
+        android:textColor="#217681"
+        android:textColorHint="#217681"
+        app:layout_constraintTop_toTopOf="@+id/tv_account_label"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_account_label"
+        app:layout_constraintStart_toEndOf="@+id/tv_account_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp" />
+
+    <TextView
+        android:id="@+id/tv_pwd_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hint_pwd_label"
+        android:textColor="#6698A0"
+        android:textSize="38sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/tv_account_label"
+        app:layout_constraintStart_toStartOf="@+id/tv_account_label"
+        android:layout_marginTop="15dp" />
+
+    <EditText
+        android:id="@+id/et_pwd"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:autofillHints="password"
+        android:background="@drawable/edittext_bg"
+        android:hint="@string/pwd_hint"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:textColor="#217681"
+        android:textColorHint="#217681"
+        app:layout_constraintTop_toTopOf="@+id/tv_pwd_label"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_pwd_label"
+        app:layout_constraintStart_toEndOf="@+id/tv_pwd_label"
+        app:layout_constraintEnd_toEndOf="@+id/et_account"
+        android:layout_marginStart="8dp" />
+
+
+    <CheckBox
+        android:id="@+id/cb_remember_pwd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        android:text=""
+        app:buttonTint="#7DCAB9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_pwd" />
+
+    <TextView
+        android:id="@+id/tv_remember_pwd"
+        android:layout_width="237dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="4dp"
+        android:text="记住密码"
+        android:textColor="#6698A0"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/cb_remember_pwd"
+        app:layout_constraintStart_toEndOf="@+id/cb_remember_pwd"
+        app:layout_constraintTop_toTopOf="@+id/cb_remember_pwd"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="342dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/btn_register_shape"
+        android:padding="12dp"
+        android:text="@string/login_btn_text"
+        android:textColor="#6CA0A4"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.482"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cb_remember_pwd" />
+
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="342dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/btn_register_shape"
+        android:padding="12dp"
+        android:text="@string/register_btn_text"
+        android:textColor="#6CA0A4"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/btn_login"
+        app:layout_constraintStart_toStartOf="@+id/btn_login"
+        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

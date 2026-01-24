@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 选中状态 -->
+    <item android:color="@color/bottom_nav_selected" android:state_checked="true" />
+
+    <!-- 其他状态（可选） -->
+    <item android:color="@color/bottom_nav_selected" android:state_selected="true" />
+    <item android:color="@color/bottom_nav_selected" android:state_activated="true" />
+
+    <!-- 默认状态（不指定任何条件） -->
+    <item android:color="@color/bottom_nav_unselected" />
+</selector>

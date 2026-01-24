@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/img_20251024_231631"
+    android:padding="20dp">
+    <TextView
+        android:id="@+id/tv_register_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/register_title"
+        android:textColor="#6698A0"
+        android:textSize="38sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="40dp" />
+
+    <EditText
+        android:id="@+id/et_register_account"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:autofillHints="username"
+        android:background="@drawable/edittext_bg"
+        android:hint="@string/register_account_hint"
+        android:inputType="text"
+        android:padding="12dp"
+        android:textColor="#217681"
+        android:textColorHint="#217681"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.517"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_register_title" />
+
+    <EditText
+        android:id="@+id/et_register_pwd"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:autofillHints="password"
+        android:background="@drawable/edittext_bg"
+        android:hint="@string/register_pwd_hint"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:textColor="#217681"
+        android:textColorHint="#217681"
+        app:layout_constraintEnd_toEndOf="@+id/et_register_account"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/et_register_account"
+        app:layout_constraintTop_toBottomOf="@+id/et_register_account" />
+
+    <EditText
+        android:id="@+id/et_register_confirm_pwd"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:autofillHints="password"
+        android:background="@drawable/edittext_bg"
+        android:hint="@string/register_confirm_pwd_hint"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:textColor="#217681"
+        android:textColorHint="#217681"
+        app:layout_constraintEnd_toEndOf="@+id/et_register_pwd"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/et_register_pwd"
+        app:layout_constraintTop_toBottomOf="@+id/et_register_pwd" />
+
+    <Button
+        android:id="@+id/btn_register_submit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:background="@drawable/btn_register_shape"
+        android:padding="12dp"
+        android:text="@string/register_submit_btn_text"
+        android:textColor="#6CA0A4"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/et_register_confirm_pwd"
+        app:layout_constraintStart_toStartOf="@+id/et_register_confirm_pwd"
+        app:layout_constraintTop_toBottomOf="@+id/et_register_confirm_pwd" />
+
+    <Button
+        android:id="@+id/btn_back_login"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/btn_register_shape"
+        android:padding="12dp"
+        android:text="@string/back_login_btn_text"
+        android:textColor="#6CA0A4"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/btn_register_submit"
+        app:layout_constraintHorizontal_bias="0.166"
+        app:layout_constraintStart_toStartOf="@+id/btn_register_submit"
+        app:layout_constraintTop_toBottomOf="@+id/btn_register_submit" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

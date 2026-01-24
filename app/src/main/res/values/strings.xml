@@ -1,0 +1,101 @@
+<resources>
+
+    <string name="login_title">用户登录</string>
+    <string name="account_hint">请输入账号</string>
+    <string name="login_btn_text">登录</string>
+    <string name="pwd_hint">请输入密码</string>
+    <string name="register_btn_text">注册</string>
+    <string name="register_page_title">这是注册页面</string>
+    <string name="register_title">用户注册</string>
+    <string name="register_account_hint">请输入注册账号</string>
+    <string name="register_pwd_hint">请输入注册密码</string>
+    <string name="register_confirm_pwd_hint">请确认密码</string>
+    <string name="register_submit_btn_text">完成注册</string>
+    <string name="back_login_btn_text">返回登录</string>
+    <string name="hint_account_label">账号：</string>
+    <string name="hint_pwd_label">密码：</string>
+    <string name="back_to_login">返回登录页</string>
+    <string name="my_home_page">我的主页</string>
+    <string name="main_image_desc">主界面图片</string>
+    <string name="decorative_image_description">装饰性图片</string>
+    <string name="log_out">退出登录</string>
+    <string name="menu_image_button">菜单</string>
+    <string name="username">用户名</string>
+    <string name="email">user@example.com</string>
+    <string name="edit_profile">编辑资料</string>
+    <string name="change_password">修改密码</string>
+    <string name="app_setting">应用设置</string>
+    <string name="version">版本 1.0.0</string>
+    <string name="tv_focus">选择任务开始专注</string>
+    <string name="time_limit">25:00</string>
+    <string name="ready_to_start">准备开始</string>
+    <string name="start">开始</string>
+    <string name="pause">暂停</string>
+    <string name="reset">重置</string>
+    <string name="today_finished">今日完成: </string>
+    <string name="count"> 0</string>
+    <string name="number_clock"> 个番茄钟</string>
+    <string name="efficiency_statistics">效率统计</string>
+    <string name="today_statistics">今日统计</string>
+    <string name="finished_tomato">完成番茄</string>
+    <string name="focus_time">0</string>
+    <string name="priority_label">优先级</string>
+    <string name="category">分类</string>
+    <string name="task_title">任务标题</string>
+    <string name="task_description">任务描述（可选）</string>
+    <string name="set_due_date">设置截止日期</string>
+    <string name="set_reminder_time">设置提醒时间</string>
+    <string name="add_new_task">添加新任务</string>
+    <string name="homepage">首页</string>
+    <string name="focus">专注</string>
+    <string name="efficiency">效率</string>
+    <string name="profile">我的</string>
+    <string name="no_todo_task">还没有待办事项</string>
+    <string name="add_first_task">添加第一个任务</string>
+    <string name="my_todo">我的待办</string>
+    <string name="unfinished">待完成</string>
+    <string name="finished">已完成</string>
+    <string name="icon_desc">图标</string>
+    <string name="back">返回</string>
+    <string name="old_password">原密码</string>
+    <string name="new_password">新密码（6-16位）</string>
+    <string name="confirm_new_password">确认新密码</string>
+    <string name="confirm_change">确认修改</string>
+    <string name="save_change">保存修改</string>
+    <string name="e_mail">邮箱</string>
+    <string name="edit_user_profile">编辑个人资料</string>
+    <string name="no_record">暂无记录</string>
+    <string name="today_record">📝 今日记录</string>
+    <string name="best_record">最佳单日记录</string>
+    <string name="continue_day">连续天数</string>
+    <string name="zero_day">0天</string>
+    <string name="average_time">日均时长</string>
+    <string name="zero_minute">0分钟</string>
+    <string name="total_focus_time">总专注时长</string>
+    <string name="total_tomato_clock">总番茄钟</string>
+    <string name="zero">0</string>
+    <string name="total_static">📈 整体统计</string>
+    <string name="today_focus_time">今日专注时长</string>
+    <string name="today_tomato_clock">今日番茄钟</string>
+    <string name="today_stat">📊 今日统计</string>
+    <string name="start_tomato_clock">🍅 开始番茄钟</string>
+    <string name="focus_pattern">专注模式</string>
+    <string name="work">工作</string>
+    <string name="date">2024-01-01</string>
+    <string name="task_discription">任务描述...</string>
+    <string name="no_info">暂无信息</string>
+    <string-array name="priority_levels">
+        <item>低优先级</item>
+        <item>中优先级</item>
+        <item>高优先级</item>
+    </string-array>
+
+    <string-array name="task_categories">
+        <item>工作</item>
+        <item>学习</item>
+        <item>生活</item>
+        <item>购物</item>
+        <item>健康</item>
+        <item>其他</item>
+    </string-array>
+</resources>

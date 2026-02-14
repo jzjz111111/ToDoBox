@@ -8,24 +8,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-    public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         NotificationHelper.createNotificationChannel(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(
-                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                        100
-                );
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 100);
             }
         }
         if (!isUserLoggedIn()) {
@@ -33,7 +28,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
             return;
         }
         setupBottomNavigation();
-        // 默认显示首页
         if (savedInstanceState == null) {
             showHomeFragment();
         }
@@ -53,12 +47,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
     private void setupBottomNavigation() {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                return handleNavigation(item);
-            }
-        });
+        bottomNav.setOnItemSelectedListener(this::handleNavigation);
     }
 
     private boolean handleNavigation(MenuItem item) {
@@ -81,7 +70,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
     }
 
     private void showHomeFragment() {
-        FocusFragment focusFragment = new FocusFragment();
         replaceFragment(new HomeFragment());
         setTitle("我的待办");
     }

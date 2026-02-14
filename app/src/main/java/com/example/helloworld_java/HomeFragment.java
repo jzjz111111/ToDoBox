@@ -1,13 +1,17 @@
 package com.example.helloworld_java;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,10 +19,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.widget.Toast;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 public class HomeFragment extends Fragment implements TodoAdapter.OnTaskClickListener {
@@ -31,7 +37,22 @@ public class HomeFragment extends Fragment implements TodoAdapter.OnTaskClickLis
     private TextView tvPendingCount, tvCompletedCount;
     private View layoutEmpty;
     private AppDatabase appDatabase;
-    private static final int REQUEST_NOTIFICATION_PERMISSION = 1001;
+    private final Executor mExecutor = Executors.newSingleThreadExecutor();
+    private final Handler mMainHandler = new Handler(Looper.getMainLooper());
+    private ActivityResultLauncher<String> requestNotificationPermissionLauncher;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestNotificationPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    if (!isGranted) {
+                        Toast.makeText(requireContext(), "需要开启通知权限才能接收任务提醒", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,6 +62,11 @@ public class HomeFragment extends Fragment implements TodoAdapter.OnTaskClickLis
         setupRecyclerView();
         loadTasks();
         return view;
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        checkNotificationPermission();
     }
     private void initViews(View view) {
         recyclerTasks = view.findViewById(R.id.recycler_tasks);
@@ -73,66 +99,53 @@ public class HomeFragment extends Fragment implements TodoAdapter.OnTaskClickLis
     @Override
     public void onTaskComplete(TodoTask task, boolean isCompleted) {
         task.setCompleted(isCompleted);
-        new UpdateTaskAsync().execute(task);
-
-        // 更新统计
-        loadTasks();
+        updateTask(task);
     }
+
+    private void updateTask(TodoTask task) {
+        mExecutor.execute(()->{
+            appDatabase.todoTaskDao().update(task);
+            mMainHandler.post(this::loadTasks);
+        });
+    }
+
     private void showEditTaskDialog(TodoTask task) {
         AddTaskDialog dialog = new AddTaskDialog();
         dialog.setTaskToEdit(task);
-        dialog.setOnTaskSavedListener(updatedTask -> new UpdateTaskAsync().execute(updatedTask));
+        dialog.setOnTaskSavedListener(this::updateTask);
         dialog.show(getParentFragmentManager(), "EditTaskDialog");
 
     }
     private void showAddTaskDialog() {
         AddTaskDialog dialog = new AddTaskDialog();
-        dialog.setOnTaskSavedListener(task -> new InsertTaskAsync().execute(task));
+        dialog.setOnTaskSavedListener(this::insertTask);
         dialog.show(getParentFragmentManager(), "AddTaskDialog");
     }
-    private class UpdateTaskAsync extends AsyncTask<TodoTask, Void, Void> {
-        @Override
-        protected Void doInBackground(TodoTask... tasks) {
-            appDatabase.todoTaskDao().update(tasks[0]);
-            return null;
-        }
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            loadTasks();
-        }
+    private void insertTask(TodoTask task) {
+        mExecutor.execute(()->{
+            appDatabase.todoTaskDao().insert(task);
+            mMainHandler.post(this::loadTasks);
+        });
     }
-
-    private class InsertTaskAsync extends AsyncTask<TodoTask, Void, Void> {
-        @Override
-        protected Void doInBackground(TodoTask... tasks) {
-            appDatabase.todoTaskDao().insert(tasks[0]);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            loadTasks();
-        }
-    }
-
-    private class LoadTasksAsync extends AsyncTask<Void, Void, TaskStats> {
-        @Override
-        protected TaskStats doInBackground(Void... voids) {
+    private void loadTasks() {
+        mExecutor.execute(() -> {
             List<TodoTask> pendingTasks = appDatabase.todoTaskDao().getPendingTasks();
             List<TodoTask> completedTasks = appDatabase.todoTaskDao().getCompletedTasks();
-            return new TaskStats(pendingTasks, completedTasks);
-        }
-
-        @Override
-        protected void onPostExecute(TaskStats stats) {
-            taskList.clear();
-            taskList.addAll(stats.pendingTasks);
-            taskList.addAll(stats.completedTasks);
-            todoAdapter.notifyDataSetChanged();
-            updateStats(stats.pendingTasks.size(), stats.completedTasks.size());
-        }
+            TaskStats stats = new TaskStats(pendingTasks, completedTasks);
+            mMainHandler.post(() -> {
+                taskList.clear();
+                int startPosition = 0;
+                int itemCount =stats.pendingTasks.size() +stats.completedTasks.size();
+                taskList.addAll(stats.pendingTasks);
+                taskList.addAll(stats.completedTasks);
+                todoAdapter.notifyItemRangeChanged(startPosition,itemCount);
+                updateStats(stats.pendingTasks.size(), stats.completedTasks.size());
+            });
+        });
     }
+
+
     private static class TaskStats {
         List<TodoTask> pendingTasks;
         List<TodoTask> completedTasks;
@@ -144,7 +157,6 @@ public class HomeFragment extends Fragment implements TodoAdapter.OnTaskClickLis
     private void updateStats(int pendingCount, int completedCount) {
         tvPendingCount.setText(String.valueOf(pendingCount));
         tvCompletedCount.setText(String.valueOf(completedCount));
-        // 显示/隐藏空状态
         if (pendingCount == 0 && completedCount == 0) {
             layoutEmpty.setVisibility(View.VISIBLE);
             recyclerTasks.setVisibility(View.GONE);
@@ -153,32 +165,12 @@ public class HomeFragment extends Fragment implements TodoAdapter.OnTaskClickLis
             recyclerTasks.setVisibility(View.VISIBLE);
         }
     }
-    private void loadTasks() {new LoadTasksAsync().execute();}
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        checkNotificationPermission();
-    }
+
     private void checkNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(
-                        requireActivity(),
-                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                        REQUEST_NOTIFICATION_PERMISSION
-                );
-            }
-        }
-    }
-    // 权限申请结果回调
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_NOTIFICATION_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            } else {
-                Toast.makeText(requireContext(), "需要开启通知权限才能接收任务提醒", Toast.LENGTH_SHORT).show();
+               requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
         }
     }

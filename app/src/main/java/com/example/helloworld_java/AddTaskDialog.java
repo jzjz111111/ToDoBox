@@ -19,6 +19,8 @@ import android.app.TimePickerDialog;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Objects;
+
 public class AddTaskDialog extends DialogFragment {
     private EditText etTitle, etDescription;
     private Spinner spinnerPriority, spinnerCategory;
@@ -82,18 +84,10 @@ public class AddTaskDialog extends DialogFragment {
     }
     //下拉框
     private void setupSpinners() {
-        ArrayAdapter<CharSequence> priorityAdapter = ArrayAdapter.createFromResource(
-                requireContext(),
-                R.array.priority_levels,
-                android.R.layout.simple_spinner_item
-        );
+        ArrayAdapter<CharSequence> priorityAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.priority_levels, android.R.layout.simple_spinner_item);
         priorityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPriority.setAdapter(priorityAdapter);
-        ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(
-                requireContext(),
-                R.array.task_categories,
-                android.R.layout.simple_spinner_item
-        );
+        ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.task_categories, android.R.layout.simple_spinner_item);
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(categoryAdapter);
     }
@@ -181,23 +175,16 @@ public class AddTaskDialog extends DialogFragment {
     }
     private void showReminderPicker() {
         Calendar calendar = Calendar.getInstance();
-        if (reminderTime != null) {
-            calendar.setTime(reminderTime);
-        } else {
-            calendar.setTime(dueDate != null ? dueDate : new Date());
-        }
+        calendar.setTime(Objects.requireNonNullElseGet(reminderTime, () -> dueDate != null ? dueDate : new Date()));
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                requireContext(), (dateView, selectedYear, selectedMonth, selectedDay) -> {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), (dateView, selectedYear, selectedMonth, selectedDay) -> {
                     calendar.set(selectedYear, selectedMonth, selectedDay);
                     int hour = calendar.get(Calendar.HOUR_OF_DAY); // 24小时制
                     int minute = calendar.get(Calendar.MINUTE);
-                    TimePickerDialog timePickerDialog = new TimePickerDialog(
-                            requireContext(),
-                            (timeView, selectedHour, selectedMinute) -> {
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(), (timeView, selectedHour, selectedMinute) -> {
                                 calendar.set(Calendar.HOUR_OF_DAY, selectedHour);
                                 calendar.set(Calendar.MINUTE, selectedMinute);
                                 calendar.set(Calendar.SECOND, 0); // 秒设为 0，避免精度问题

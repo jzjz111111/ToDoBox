@@ -11,8 +11,6 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         Button btnBack = findViewById(R.id.btn_back);
-        btnBack.setOnClickListener(v ->  {
-                finish();
-        });
+        btnBack.setOnClickListener(v -> finish());
     }
 }

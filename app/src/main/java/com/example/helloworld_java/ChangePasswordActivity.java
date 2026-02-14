@@ -6,6 +6,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Objects;
+
 public class ChangePasswordActivity extends AppCompatActivity {
     private TextInputEditText etOldPwd, etNewPwd, etConfirmPwd;
     private SharedPreferences userSp ;
@@ -35,9 +37,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     // 验证并修改密码
     private void changePassword() {
-        String oldPwd = etOldPwd.getText().toString().trim();
-        String newPwd = etNewPwd.getText().toString().trim();
-        String confirmPwd = etConfirmPwd.getText().toString().trim();
+        String oldPwd = Objects.requireNonNull(etOldPwd.getText()).toString().trim();
+        String newPwd = Objects.requireNonNull(etNewPwd.getText()).toString().trim();
+        String confirmPwd = Objects.requireNonNull(etConfirmPwd.getText()).toString().trim();
 
         //登录时代表密码的键
         String currentPwd = userSp.getString("current_password", "");

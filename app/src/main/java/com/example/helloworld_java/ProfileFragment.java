@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
@@ -18,6 +19,20 @@ public class ProfileFragment extends Fragment {
     private Button btnLogout;
 
     private CardView cardEditProfile, cardChangePassword,cardSettings;
+    private ActivityResultLauncher<Intent> editProfileLauncher;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        editProfileLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        loadUserData();
+                    }
+                }
+        );
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,9 +65,8 @@ public class ProfileFragment extends Fragment {
     private void setupClickListeners() {
         btnLogout.setOnClickListener(v -> logout());
         cardEditProfile.setOnClickListener(v -> {
-            // startActivityForResult接收返回结果
             Intent intent = new Intent(requireContext(), EditProfileActivity.class);
-            startActivityForResult(intent, 1001); // 1001是请求码，用于识别哪个页面返回的结果
+            editProfileLauncher.launch(intent);
         });
         cardChangePassword.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), ChangePasswordActivity.class);
@@ -62,15 +76,6 @@ public class ProfileFragment extends Fragment {
             Intent intent =new Intent(requireContext(),SettingsActivity.class);
             startActivity(intent);
         });
-    }
-
-    // 接收EditProfileActivity的返回结果，刷新个人信息
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1001 && resultCode == RESULT_OK) {
-            loadUserData();
-        }
     }
 
     private void logout() {

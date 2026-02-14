@@ -13,13 +13,13 @@ import java.util.concurrent.Executors;
 public class EfficiencyViewModel extends ViewModel {
 
     private AppDatabase database;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
-    private MutableLiveData<String> todayDate = new MutableLiveData<>();
+    private final MutableLiveData<String> todayDate = new MutableLiveData<>();
     // 线程池（用于子线程计算平均时长，避免阻塞主线程）
-    private Executor executor = Executors.newSingleThreadExecutor();
+    private final Executor executor = Executors.newSingleThreadExecutor();
     // 存储平均每天时长的 LiveData
-    private MutableLiveData<Long> averageDailyDurationLiveData = new MutableLiveData<>(0L);
+    private final MutableLiveData<Long> averageDailyDurationLiveData = new MutableLiveData<>(0L);
     public void setDatabase(AppDatabase database) {
         this.database = database;
     }
@@ -82,7 +82,6 @@ public class EfficiencyViewModel extends ViewModel {
             averageDailyDurationLiveData.postValue(0L);
             return;
         }
-
         executor.execute(() -> {
             try {
                 Long totalDuration = database.tomatoRecordDao().getTotalDurationSync();

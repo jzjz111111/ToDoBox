@@ -15,10 +15,8 @@ public class BootReceiver extends BroadcastReceiver {
             new Thread(() -> {
                 AppDatabase db = AppDatabase.getInstance(context);
                 List<TodoTask> tasks = db.todoTaskDao().getFutureReminders(new Date());
-
                 for (TodoTask task : tasks) {
-                    if (task.getReminderTime() != null &&
-                            task.getReminderTime().after(new Date())) {
+                    if (task.getReminderTime() != null && task.getReminderTime().after(new Date())) {
                         NotificationHelper.scheduleNotification(context, task);
                     }
                 }

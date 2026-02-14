@@ -1,8 +1,7 @@
 package com.example.helloworld_java;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,11 +34,11 @@ public class EfficiencyFragment extends Fragment {
     private EfficiencyViewModel viewModel;
 
     // 线程池
-    private Executor executor = Executors.newSingleThreadExecutor();
+    private final Executor executor = Executors.newSingleThreadExecutor();
 
     // 日期格式
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -94,9 +92,7 @@ public class EfficiencyFragment extends Fragment {
         viewModel.getStreakDays().observe(getViewLifecycleOwner(), days -> {
             if (days != null) tvStreakDays.setText(days + "天");
         });
-        viewModel.getTodayRecords().observe(getViewLifecycleOwner(), records -> {
-            updateTodayRecords(records);
-        });
+        viewModel.getTodayRecords().observe(getViewLifecycleOwner(), this::updateTodayRecords);
         viewModel.getBestDayRecord().observe(getViewLifecycleOwner(), best -> {
             if (best != null && best.count > 0) {
                 tvBestRecord.setText(best.count + "个");
@@ -182,6 +178,7 @@ public class EfficiencyFragment extends Fragment {
     }
     private void saveRecord(int minutes, boolean completed) {
         executor.execute(() -> {
+            Context context=getContext();
             try {
                 TomatoRecord record = new TomatoRecord();
                 record.setRecordDate(dateFormat.format(new Date()));
@@ -189,7 +186,7 @@ public class EfficiencyFragment extends Fragment {
                 record.setEndTime(timeFormat.format(new Date()));
                 record.setDuration(minutes * 60 * 1000L);
                 record.setStatus(completed ? TomatoRecord.STATUS_COMPLETED : TomatoRecord.STATUS_INTERRUPTED);
-                AppDatabase.getInstance(requireContext()).tomatoRecordDao().insert(record);
+                AppDatabase.getInstance(context).tomatoRecordDao().insert(record);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -203,7 +200,7 @@ public class EfficiencyFragment extends Fragment {
     private void updateTimerText() {
         int minutes = secondsElapsed / 60;
         int seconds = secondsElapsed % 60;
-        btnStartFocus.setText(String.format("%02d:%02d", minutes, seconds));
+        btnStartFocus.setText(String.format(Locale.getDefault(),"%02d:%02d", minutes, seconds));
     }
 
 

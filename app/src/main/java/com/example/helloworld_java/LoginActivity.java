@@ -129,9 +129,6 @@ public class LoginActivity extends AppCompatActivity {
         editor.apply();
         String currentPwd = etPwd.getText().toString().trim(); // 获取当前输入的密码
         SharedPreferences userSp = getSharedPreferences("user_info", MODE_PRIVATE);
-        userSp.edit()
-                .putString("current_user", account) // 保存当前登录用户名（个人中心用）
-                .putString("current_password", currentPwd) // 保存当前登录用户密码（修改密码校验用）
-                .apply();
+        userSp.edit().putString("current_user", account).putString("current_password", currentPwd).apply();
     }
 }

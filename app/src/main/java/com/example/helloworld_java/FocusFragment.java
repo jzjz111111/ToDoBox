@@ -2,14 +2,19 @@ package com.example.helloworld_java;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 public class FocusFragment extends Fragment {
     private TextView tvStatus, tvTodayCount;
@@ -27,6 +32,7 @@ public class FocusFragment extends Fragment {
     private int todayTomatoCount = 0;
 
     private long timerStartTime;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -97,7 +103,13 @@ public class FocusFragment extends Fragment {
     }
 
     private void saveCompletedTomato() {
+        Context context = getContext();
+        if (context == null) {
+            Log.w("TomatoRecord", "上下文为空，跳过保存番茄钟记录");
+            return;
+        }
         new Thread(() -> {
+
             try {
                 String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                 String endTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -108,32 +120,45 @@ public class FocusFragment extends Fragment {
                 record.setEndTime(endTime);
                 record.setDuration(workTime);
                 record.setStatus(0); // STATUS_COMPLETED
-                AppDatabase.getInstance(requireContext()).tomatoRecordDao().insert(record);
+                AppDatabase.getInstance(context).tomatoRecordDao().insert(record);
 
             } catch (Exception e) {
-                e.printStackTrace();
+              Log.e("TomatoRecord", "保存番茄钟记录失败", e);
             }
         }).start();
     }
 
     private void loadTodayTomatoCount() {
+        Context context=getContext();
+        FragmentActivity activity=getActivity();
+        if (context == null || activity == null) {
+            Log.w("TomatoLoader", "上下文/Activity为空，跳过加载今日番茄数");
+            return;
+        }
         new Thread(() -> {
             try {
                 String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                AppDatabase db = AppDatabase.getInstance(requireContext());
+                AppDatabase db = AppDatabase.getInstance(context);
                 int count = db.tomatoRecordDao().getTodayCountSync(today);
-                requireActivity().runOnUiThread(() -> {
+                new android.os.Handler(Looper.getMainLooper()).post(() -> {
+                    if (!activity.isFinishing() && !activity.isDestroyed()) {
                         todayTomatoCount = count;
                         tvTodayCount.setText(String.valueOf(todayTomatoCount));
+                    }
                 });
             } catch (Exception e) {
-                e.printStackTrace();
+               Log.e("TomatoLoader", "加载今日番茄钟数量失败", e);
             }
         }).start();
     }
 
     private void saveInterruptedTomato() {
         if (timerStartTime > 0 && timeLeftInMillis < workTime) {
+            Context context=getContext();
+            if(context==null){
+                Log.w("TomatoInterrupted","context为空，跳过记录打断的番茄钟");
+                return;
+            }
             new Thread(() -> {
                 try {
                     String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -146,10 +171,9 @@ public class FocusFragment extends Fragment {
                     record.setEndTime(endTime);
                     record.setDuration(actualDuration);
                     record.setStatus(1); // STATUS_INTERRUPTED
-                    AppDatabase.getInstance(requireContext()).tomatoRecordDao().insert(record);
-
+                    AppDatabase.getInstance(context).tomatoRecordDao().insert(record);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e("TomatoInterrupted","保存已被打断的番茄钟失败",e);
                 }
             }).start();
         }
@@ -174,7 +198,7 @@ public class FocusFragment extends Fragment {
         isWorkTime = true;
         timeLeftInMillis = workTime;
         circleProgress.setProgressColor(0xFFFF5722); // 工作颜色
-        timerStartTime = 0;
+        timerStartTime = 0;//重置之前瞬时的时间戳，下次获得的会是新的时间戳
         updateButtonStates();
         updateTimerDisplay();
         tvStatus.setText("准备开始");
@@ -183,10 +207,8 @@ public class FocusFragment extends Fragment {
     private void updateTimerDisplay() {
         int minutes = (int) (timeLeftInMillis / 1000) / 60;
         int seconds = (int) (timeLeftInMillis / 1000) % 60;
-
-        String timeLeft = String.format("%02d:%02d", minutes, seconds);
+        String timeLeft = String.format(Locale.getDefault(),"%02d:%02d", minutes, seconds);
         circleProgress.setText(timeLeft);
-        // 更新进度条
         long totalTime = isWorkTime ? workTime : breakTime;
         int progress = (int) ((totalTime - timeLeftInMillis) * 100 / totalTime);
         circleProgress.setProgress(progress);
@@ -201,9 +223,7 @@ public class FocusFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
+        countDownTimer.cancel();
     }
     @Override
     public void onResume(){

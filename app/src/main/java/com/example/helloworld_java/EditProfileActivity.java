@@ -8,6 +8,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Objects;
+
 public class EditProfileActivity extends AppCompatActivity {
     private TextInputEditText etUsername, etEmail;
     private Button btnSave;
@@ -39,21 +41,20 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void saveProfile() {
-        String newUsername = etUsername.getText().toString().trim();
-        String newEmail = etEmail.getText().toString().trim();
+        String newUsername = Objects.requireNonNull(etUsername.getText()).toString().trim();
+        String newEmail = Objects.requireNonNull(etEmail.getText()).toString().trim();
 
         if (!checkAccountValid(newUsername)) {
             Toast.makeText(this,TOAST_ACCOUNT_EMPTY,Toast.LENGTH_SHORT).show();
             return;
         }
-        if (newEmail.isEmpty() || !newEmail.contains("@")) {
+        if (    !newEmail.contains("@")) {
             Toast.makeText(this, "请输入有效的邮箱", Toast.LENGTH_SHORT).show();
             return;
         }
         //  获取当前登录的旧用户名和旧密码
         String oldUsername = userSp.getString("current_user", "");
         String oldPassword = userSp.getString("current_password", ""); // 原密码（登录时存储的）
-
         // 用户名唯一性校验（跳过自己和自己重复的情况）newUsername也是变量，调用方法时是用户新输得account，实现键值对的对应
         if (!newUsername.equals(oldUsername)) {
             String registeredPwd = userSp.getString(newUsername, "");
@@ -66,7 +67,6 @@ public class EditProfileActivity extends AppCompatActivity {
         }
         // 保存到SharedPreferences
         userSp.edit().putString("current_user", newUsername).putString("current_email", newEmail).putString("current_password", oldPassword).apply();
-
         Toast.makeText(this, "资料修改成功", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent();
         setResult(RESULT_OK, intent); //ProfileFragment刷新

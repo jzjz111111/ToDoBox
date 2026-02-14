@@ -26,7 +26,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         initSharedPreferences();
         setContentView(R.layout.activity_register);
         initViews();
@@ -57,11 +57,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void bindButtonClick() {
-        btnRegister.setOnClickListener(v -> {
+            btnRegister.setOnClickListener(v -> {
             String account = etRegisterAccount.getText().toString().trim();
             String pwd = etRegisterPwd.getText().toString().trim();
             String confirmPwd = etRegisterConfirmPwd.getText().toString().trim();
-
             if (!checkAccountValid(account)) {
                 showToast(TOAST_ACCOUNT_EMPTY);
             } else if (pwd.isEmpty()) {
@@ -78,8 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        btnBackLogin.setOnClickListener(v -> finish());
+            btnBackLogin.setOnClickListener(v -> finish());
     }
 
     private boolean checkAccountValid(String account) {

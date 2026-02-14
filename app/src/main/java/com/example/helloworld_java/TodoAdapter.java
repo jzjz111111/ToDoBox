@@ -14,9 +14,9 @@ import java.util.Locale;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TaskViewHolder> {
 
-    private List<TodoTask> taskList;
-    private OnTaskClickListener listener;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd日 HH:mm", Locale.CHINA);
+    private final List<TodoTask> taskList;
+    private final OnTaskClickListener listener;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd日 HH:mm", Locale.CHINA);
 
     public interface OnTaskClickListener {
         void onTaskClick(TodoTask task);
@@ -31,8 +31,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TaskViewHolder
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_task, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task, parent, false);
         return new TaskViewHolder(view);
     }
 
@@ -47,10 +46,14 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TaskViewHolder
         return taskList.size();
     }
 
-    class TaskViewHolder extends RecyclerView.ViewHolder {
-        private CheckBox cbCompleted;
-        private TextView tvTaskTitle, tvTaskDescription, tvDueDate,tvTaskCategory;
-        private ImageView ivPriority, ivReminder;
+    public class TaskViewHolder extends RecyclerView.ViewHolder {
+        private final CheckBox cbCompleted;
+        private final TextView tvTaskTitle;
+        private final TextView tvTaskDescription;
+        private final TextView tvDueDate;
+        private final TextView tvTaskCategory;
+        private final ImageView ivPriority;
+        private final ImageView ivReminder;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -67,17 +70,15 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TaskViewHolder
         private void setupClickListeners() {
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onTaskClick(taskList.get(getAdapterPosition()));
+                    listener.onTaskClick(taskList.get(getBindingAdapterPosition()));
                 }
             });
-
             cbCompleted.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (listener != null) {
-                    listener.onTaskComplete(taskList.get(getAdapterPosition()), isChecked);
+                    listener.onTaskComplete(taskList.get(getBindingAdapterPosition()), isChecked);
                 }
             });
         }
-
         public void bind(TodoTask task) {
             tvTaskTitle.setText(task.getTitle());
             tvTaskDescription.setText(task.getDescription());

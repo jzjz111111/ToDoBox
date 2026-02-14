@@ -2,6 +2,7 @@ package com.example.helloworld_java;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ public class EfficiencyFragment extends Fragment {
 
     // ViewModel
     private EfficiencyViewModel viewModel;
+    private static final String TAG = "EfficiencyFragment";
 
     // 线程池
     private final Executor executor = Executors.newSingleThreadExecutor();
@@ -90,17 +92,21 @@ public class EfficiencyFragment extends Fragment {
             if (duration != null) tvTotalDuration.setText(formatDuration(duration));
         });
         viewModel.getStreakDays().observe(getViewLifecycleOwner(), days -> {
-            if (days != null) tvStreakDays.setText(days + "天");
+            if (days != null) {
+                String streakText = getString(R.string.streak_days, days);
+                tvStreakDays.setText(streakText);
+            }
         });
         viewModel.getTodayRecords().observe(getViewLifecycleOwner(), this::updateTodayRecords);
         viewModel.getBestDayRecord().observe(getViewLifecycleOwner(), best -> {
             if (best != null && best.count > 0) {
-                tvBestRecord.setText(best.count + "个");
+                String bestRecordText = getString(R.string.best_record_count, best.count);
+                tvBestRecord.setText(bestRecordText);
             }
         });
         viewModel.getAverageDailyDuration().observe(getViewLifecycleOwner(), averageDuration -> {
             if (averageDuration != null) {
-                tvAverageDailyDuration.setText("" + formatDuration(averageDuration));
+                tvAverageDailyDuration.setText(formatDuration(averageDuration));
             } else {
                 tvAverageDailyDuration.setText("0分钟");
             }
@@ -120,10 +126,8 @@ public class EfficiencyFragment extends Fragment {
     private void startTomato() {
         isRunning = true;
         secondsElapsed = 0;
-        btnStartFocus.setText("00:00");
+        btnStartFocus.setText(R.string.timer_initial_text);
         btnStartFocus.setBackgroundColor(0xFFFF5722); // 红色
-
-
         timerTask = new Runnable() {
             @Override
             public void run() {
@@ -137,7 +141,6 @@ public class EfficiencyFragment extends Fragment {
             }
         };
         btnStartFocus.post(timerTask);
-
         Toast.makeText(getContext(), "专注开始", Toast.LENGTH_SHORT).show();
     }
 
@@ -189,7 +192,7 @@ public class EfficiencyFragment extends Fragment {
                 AppDatabase.getInstance(context).tomatoRecordDao().insert(record);
 
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG,"保存失败",e);
             }
         });
     }

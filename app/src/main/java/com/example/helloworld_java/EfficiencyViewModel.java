@@ -1,5 +1,6 @@
 package com.example.helloworld_java;
 
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -11,7 +12,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class EfficiencyViewModel extends ViewModel {
-
+    private static final String TAG ="DayAverageTime";
     private AppDatabase database;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
@@ -31,6 +32,7 @@ public class EfficiencyViewModel extends ViewModel {
     }
 
     private String getToday() {
+
         return  dateFormat.format(new Date());
     }
 
@@ -72,7 +74,8 @@ public class EfficiencyViewModel extends ViewModel {
     //对外暴露
     public LiveData<Long> getAverageDailyDuration() {
         // 首次调用时主动加载数据
-        if (averageDailyDurationLiveData.getValue() == 0L && database != null) {
+        Long currentValue = averageDailyDurationLiveData.getValue();
+        if (currentValue != null && currentValue == 0L && database != null) {
             loadAverageDailyDuration();
         }
         return averageDailyDurationLiveData;
@@ -93,7 +96,7 @@ public class EfficiencyViewModel extends ViewModel {
                 // 通知主线程更新 LiveData
                 averageDailyDurationLiveData.postValue(averageDuration);
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG,"日均时长计算失败",e);
                 averageDailyDurationLiveData.postValue(0L); // 异常时默认 0
             }
         });

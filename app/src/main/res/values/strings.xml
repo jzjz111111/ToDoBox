@@ -84,6 +84,9 @@
     <string name="date">2024-01-01</string>
     <string name="task_discription">任务描述...</string>
     <string name="no_info">暂无信息</string>
+    <string name="streak_days">%d天</string>
+    <string name="best_record_count">%d个</string>
+    <string name="timer_initial_text">00:00</string>
     <string-array name="priority_levels">
         <item>低优先级</item>
         <item>中优先级</item>

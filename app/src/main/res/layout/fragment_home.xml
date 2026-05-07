@@ -19,6 +19,18 @@
         android:layout_marginTop="16dp" />
 
     <ImageButton
+        android:id="@+id/btn_search"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_menu_search"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:tint="#000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_add_task"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/search"/>
+
+    <ImageButton
         android:id="@+id/btn_add_task"
         android:layout_width="48dp"
         android:layout_height="48dp"

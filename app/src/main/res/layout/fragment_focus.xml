@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.example.helloworld_java.CircleProgressView
+    <com.example.helloworld_java.ui.widget.CircleProgressView
         android:id="@+id/circle_progress"
         android:layout_width="280dp"
         android:layout_height="280dp"
